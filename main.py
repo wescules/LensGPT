@@ -5,7 +5,7 @@ Usage:
     python mediasearch.py index /path/to/media
     python mediasearch.py search "sunset on the beach"
 """
-
+from concurrent.futures import ProcessPoolExecutor, as_completed
 import os
 import sys
 import numpy as np
@@ -60,28 +60,40 @@ def extract_keyframes(video_path, every_n_seconds=FRAME_INTERVAL):
     return frames
 
 
-def build_index(folder):
-    paths = []
-    embeddings = []
+def process_file(p):
+    """Worker function run in parallel."""
+    try:
+        if p.suffix.lower() in IMAGE_EXTS:
+            img = Image.open(p).convert("RGB")
+            emb = get_image_embedding(img)
+        else:
+            frames = extract_keyframes(p)
+            if not frames:
+                return None
+            embs = np.stack([get_image_embedding(f) for f in frames])
+            emb = embs.mean(axis=0)
+        return str(p), emb
+    except Exception as e:
+        print(f"Error {p}: {e}")
+        return None
 
-    files = [p for p in Path(folder).rglob("*") if p.suffix.lower() in IMAGE_EXTS | VIDEO_EXTS]
+
+def build_index(folder, max_workers=6):
+    folder = Path(folder)
+    files = [p for p in folder.rglob("*") if p.suffix.lower() in (IMAGE_EXTS | VIDEO_EXTS)]
     print(f"Found {len(files)} media files")
 
-    for p in tqdm(files, desc="Indexing"):
-        try:
-            if p.suffix.lower() in IMAGE_EXTS:
-                img = Image.open(p).convert("RGB")
-                emb = get_image_embedding(img)
-            else:
-                frames = extract_keyframes(p)
-                if not frames:
-                    continue
-                embs = np.stack([get_image_embedding(f) for f in frames])
-                emb = embs.mean(axis=0)
-            embeddings.append(emb)
-            paths.append(str(p))
-        except Exception as e:
-            print(f"Error {p}: {e}")
+    paths, embeddings = [], []
+
+    with ProcessPoolExecutor(max_workers=max_workers) as executor:
+        futures = {executor.submit(process_file, p): p for p in files}
+
+        for f in tqdm(as_completed(futures), total=len(futures), desc="Indexing (parallel)"):
+            result = f.result()
+            if result is not None:
+                path, emb = result
+                paths.append(path)
+                embeddings.append(emb)
 
     if not embeddings:
         print("No embeddings generated.")
