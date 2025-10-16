@@ -72,6 +72,4 @@ python main.py search
 
 * The first run will download the CLIP model (~400 MB). After that, everything works offline.
 * Designed to handle **medium-to-large collections**, but indexing can take time for tens of thousands of files.
-* Works on Windows, macOS, and Linux.
-
 ---
