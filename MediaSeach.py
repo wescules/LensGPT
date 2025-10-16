@@ -24,8 +24,15 @@ FRAME_INTERVAL = 5     # seconds between sampled frames in videos
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 # ---------------------------------------- #
 
-model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(DEVICE)
-processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+try:
+    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32", local_files_only=True).to(DEVICE)
+    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32", local_files_only=True)
+    print("✅ OpenAI Model exists locally and is ready!")
+except:
+    print("❌ OpenAI Model not found locally. Attempting to download it. Re-Run the script to build index.")
+    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32").to(DEVICE)
+    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
+
 
 IMAGE_EXTS = {".jpg", ".jpeg", ".png", ".bmp", ".webp"}
 VIDEO_EXTS = {".mp4", ".mov", ".avi", ".mkv", ".m4v"}
@@ -87,7 +94,7 @@ class MediaSearch:
         max_workers = os.cpu_count() / 2 or 6 
         print(f'🚀 Spawning {max_workers} worker threads to build index')
         with ProcessPoolExecutor(max_workers=int(max_workers)) as executor:
-            futures = {executor.submit(process_file, p): p for p in files}
+            futures = {executor.submit(self.process_file, p): p for p in files}
 
             for f in tqdm(as_completed(futures), total=len(futures), desc="Indexing (parallel)"):
                 result = f.result()

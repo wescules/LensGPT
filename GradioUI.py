@@ -9,7 +9,7 @@ class GradioUI:
 
     def display_UI(self):
         with gr.Blocks() as demo:
-            gr.Markdown("## LensGPT Media Search")
+            gr.Markdown("## Pixplore Media Search")
             
             with gr.Row():
                 query_input = gr.Textbox(label="Search query")

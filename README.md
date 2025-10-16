@@ -1,6 +1,6 @@
-# LensGPT — Semantic Media Search
+# Pixplore — Semantic Media Search
 
-LensGPT is a personal media search tool that lets you search through your photos and videos using natural language. It uses OpenAI’s CLIP model to understand the content of images and videos, so you can find what you’re looking for without needing to remember file names or folders.
+Pixplore is a personal media search tool that lets you search through your photos and videos using natural language. It uses OpenAI’s CLIP model to understand the content of images and videos, so you can find what you’re looking for without needing to remember file names or folders.
 
 ---
 
@@ -20,8 +20,8 @@ LensGPT is a personal media search tool that lets you search through your photos
 1. Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/LensGPT.git
-cd LensGPT
+git clone https://github.com/yourusername/Pixplore.git
+cd Pixplore
 ```
 
 2. Install dependencies:
@@ -52,7 +52,6 @@ python main.py search
 ```
 
 ![alt text](assets/image.png)
-
 * Enter a search query in natural language.
 * Browse the gallery of results.
 * Click on images or video thumbnails to open/play them.
