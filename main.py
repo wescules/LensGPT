@@ -15,9 +15,9 @@ def main():
         sys.exit(1)
 
     cmd = sys.argv[1]
+
     if cmd == "index" and len(sys.argv) == 3:
         folder = sys.argv[2]
-        print("Building Index")
         MediaSearch().build_index(folder)
     elif cmd == "search":
         GradioUI().display_UI()

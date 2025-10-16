@@ -75,6 +75,7 @@ class MediaSearch:
             return None
 
     def build_index(self, folder):
+        print("🔧 Building Index. This will take a while...")
         folder = Path(folder)
         files = [p for p in folder.rglob("*") if p.suffix.lower() in (IMAGE_EXTS | VIDEO_EXTS)]
         print(f"Found {len(files)} media files")

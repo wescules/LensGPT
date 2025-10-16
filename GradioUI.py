@@ -2,12 +2,12 @@ import gradio as gr
 import os
 import cv2
 from PIL import Image
+from matplotlib.pyplot import grid
 from MediaSeach import MediaSearch
 class GradioUI:
     THUMB_SIZE = (500, 500)  # thumbnail size for display
 
     def display_UI(self):
-        # Gradio UI
         with gr.Blocks() as demo:
             gr.Markdown("## LensGPT Media Search")
             
@@ -16,7 +16,7 @@ class GradioUI:
                 search_btn = gr.Button("Search")
             
             with gr.Row():
-                gallery = gr.Gallery(label="Results", show_label=True, elem_classes="gallery")
+                gallery = gr.Gallery(label="Results", show_label=True, elem_classes="gallery", height=1600, columns=4)
             
             # Hidden file paths to handle clicks
             file_paths_state = gr.State()
@@ -32,7 +32,6 @@ class GradioUI:
                 if paths and 0 <= evt.index < len(paths):
                     self.open_file(paths[evt.index])
             
-            # gallery.select(fn=on_click, inputs=[gr.SelectData(), file_paths_state], outputs=[])
             gallery.select(fn=on_click, inputs=[file_paths_state], outputs=[])
 
             demo.launch(pwa=True)
