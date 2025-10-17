@@ -51,7 +51,8 @@ This will create embeddings for all images and videos in the folder and save the
 python main.py search
 ```
 
-![alt text](assets/image.png)
+<img width="1824" height="2000" alt="image" src="https://github.com/user-attachments/assets/319306cd-cabd-4d8f-8230-83713e7e4d2f" />
+
 * Enter a search query in natural language.
 * Browse the gallery of results.
 * Click on images or video thumbnails to open/play them.
